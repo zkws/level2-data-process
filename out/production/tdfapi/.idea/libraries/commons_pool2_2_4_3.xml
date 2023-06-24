@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="commons-pool2-2.4.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/commons-pool2-2.4.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jedis-2.9.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jtds-1.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ojdbc8-21.7.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/opencsv-2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/orai18n-19.7.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/protobuf-java-2.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tdfapi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
