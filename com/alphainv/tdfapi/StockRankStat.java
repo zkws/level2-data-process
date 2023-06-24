@@ -34,6 +34,7 @@ public class StockRankStat implements Runnable{
         Date statDate = new Date();
         long statDateLong = statDate.getTime();
         SimpleDateFormat fullDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String insertStatDate = insertStatTime.substring(0,8);
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
@@ -63,8 +64,8 @@ public class StockRankStat implements Runnable{
                         String stkCode = singleStkEntry.getKey();
                         String insertFieldNameValue = String.format("%.1f",singleStkEntry.getValue());
                         String insertFieldNameRankValue = String.valueOf(i);
-                        String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time)" +
-                                " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'))";
+                        String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date)" +
+                                " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
                         System.out.println(insertSql);
                         s.executeUpdate(insertSql);
                     }
@@ -83,8 +84,8 @@ public class StockRankStat implements Runnable{
                 String CScoreValueRankValue = String.valueOf(i);
                 String weightedOrderBSRateValue = String.format("%.1f",valueList.get(0));
                 String transBSRateValue = String.format("%.1f",valueList.get(1));
-                String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time)" +
-                        "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'))";
+                String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date)" +
+                        "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
                 System.out.println(insertSql);
                 s.executeUpdate(insertSql);
             }
