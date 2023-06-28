@@ -84,8 +84,6 @@ public class ChannelStockSellOrderStat implements Runnable{
                     order5MTotalValue = order5MTotalValue!= null?order5MTotalValue:0;
                     new5MOrderTotalValue = order5MTotalValue+turnoverValue;
                     if (null!=highLimitFlag&&highLimitFlag.equals(1)){
-                        newestPrice = newestPriceMap.get(stkCode);
-                        newestPrice = newestPrice!= null?newestPrice:0;
 //                    long highLimitTurnover = newestPrice*highLimitOrderNum/10000;
                         if (new5MOrderTotalValue < highLimitTurnover){
                             new5MOrderTotalValue = highLimitTurnover;

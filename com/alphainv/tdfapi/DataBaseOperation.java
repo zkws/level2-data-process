@@ -373,116 +373,24 @@ public class DataBaseOperation {
         return sectorStkMapCollection;
     }
 
-    public static HashMap<String,Integer> getStockRedisIndexMap() throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, ParseException {
-        HashMap<String,Integer> stockRedisIndexMap = new HashMap<String,Integer>();
-        Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-        String url = "jdbc:jtds:sqlserver://10.23.188.51:1433/myStrategy";
-        //String url = "jdbc:jtds:sqlserver://localhost:1433/fds";
-        String user = "sa";
-        String password = "Wpy021138";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String sql = "select * from CODE_STK_INDU_HSALL";
-        ResultSet rs = stmt.executeQuery(sql);
-        HashMap<String,Integer> sw1RedisIndexMap = new HashMap<String,Integer>();
-        sw1RedisIndexMap.put("230000",5);
-        sw1RedisIndexMap.put("460000",2);
-        sw1RedisIndexMap.put("510000",0);
-        sw1RedisIndexMap.put("480000",4);
-        sw1RedisIndexMap.put("210000",0);
-        sw1RedisIndexMap.put("330000",0);
-        sw1RedisIndexMap.put("610000",1);
-        sw1RedisIndexMap.put("490000",0);
-        sw1RedisIndexMap.put("450000",0);
-        sw1RedisIndexMap.put("110000",0);
-        sw1RedisIndexMap.put("350000",0);
-        sw1RedisIndexMap.put("650000",0);
-        sw1RedisIndexMap.put("730000",0);
-        sw1RedisIndexMap.put("420000",3);
-        sw1RedisIndexMap.put("340000",1);
-        sw1RedisIndexMap.put("430000",1);
-        sw1RedisIndexMap.put("240000",1);
-        sw1RedisIndexMap.put("620000",1);
-        sw1RedisIndexMap.put("360000",2);
-        sw1RedisIndexMap.put("720000",1);
-        sw1RedisIndexMap.put("410000",2);
-        sw1RedisIndexMap.put("280000",3);
-        sw1RedisIndexMap.put("630000",5);
-        sw1RedisIndexMap.put("710000",4);
-        sw1RedisIndexMap.put("270000",2);
-        sw1RedisIndexMap.put("220000",3);
-        sw1RedisIndexMap.put("370000",4);
-        sw1RedisIndexMap.put("640000",5);
-        while (rs.next()){
-            String stkCode = rs.getString("stkCode");
-            String sw1Code = rs.getString("sw1Code");
-            if (sw1Code!=null){
-                stockRedisIndexMap.put(stkCode,sw1RedisIndexMap.get(sw1Code));
-            }
-            else{
-                stockRedisIndexMap.put(stkCode,0);
-            }
+    public static HashSet<String> getAvailableStkSet() throws SQLException, ClassNotFoundException {
+        HashSet<String> availableStkSet = new HashSet<>();
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
+        String oracleUser = "iacore";
+        String oraclePd = "tmd242209";
+        Connection oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
+        String allStkSql = "select * from CODE_STK_INDU_HSALL";// 预编译语句，“？”代表参数
+//        System.out.println(swSql);
+        PreparedStatement pre = oracleCon.prepareStatement(allStkSql);// 实例化预编译语句
+        ResultSet stkListResult = pre.executeQuery();
+//        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
+        while (stkListResult.next()){
+            String stkCode = stkListResult.getString("stkCode");
+            availableStkSet.add(stkCode);
         }
-        return stockRedisIndexMap;
+        return availableStkSet;
     }
-
-    public static HashMap<String,Integer> getSectorRedisIndexMap() throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, ParseException {
-        HashMap<String,Integer> sectorRedisIndexMap = new HashMap<String,Integer>();
-        Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-        String url = "jdbc:jtds:sqlserver://10.23.188.51:1433/myStrategy";
-        //String url = "jdbc:jtds:sqlserver://localhost:1433/fds";
-        String user = "sa";
-        String password = "Wpy021138";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String sql = "select * from CODE_STK_INDU_HSALL";
-        ResultSet rs = stmt.executeQuery(sql);
-        HashMap<String,Integer> sw1RedisIndexMap = new HashMap<String,Integer>();
-        sectorRedisIndexMap.put("230000",5);
-        sectorRedisIndexMap.put("460000",2);
-        sectorRedisIndexMap.put("510000",0);
-        sectorRedisIndexMap.put("480000",4);
-        sectorRedisIndexMap.put("210000",0);
-        sectorRedisIndexMap.put("330000",0);
-        sectorRedisIndexMap.put("610000",1);
-        sectorRedisIndexMap.put("490000",0);
-        sectorRedisIndexMap.put("450000",0);
-        sectorRedisIndexMap.put("110000",0);
-        sectorRedisIndexMap.put("350000",0);
-        sectorRedisIndexMap.put("650000",0);
-        sectorRedisIndexMap.put("730000",0);
-        sectorRedisIndexMap.put("420000",3);
-        sectorRedisIndexMap.put("340000",1);
-        sectorRedisIndexMap.put("430000",1);
-        sectorRedisIndexMap.put("240000",1);
-        sectorRedisIndexMap.put("620000",1);
-        sectorRedisIndexMap.put("360000",2);
-        sectorRedisIndexMap.put("720000",1);
-        sectorRedisIndexMap.put("410000",2);
-        sectorRedisIndexMap.put("280000",3);
-        sectorRedisIndexMap.put("630000",5);
-        sectorRedisIndexMap.put("710000",4);
-        sectorRedisIndexMap.put("270000",2);
-        sectorRedisIndexMap.put("220000",3);
-        sectorRedisIndexMap.put("370000",4);
-        sectorRedisIndexMap.put("640000",5);
-        while (rs.next()){
-//            String stkCode = rs.getString("stkCode");
-            String sw1Code = rs.getString("sw1Code");
-            String sw2Code = rs.getString("sw2Code");
-            String sw3Code = rs.getString("sw3Code");
-            if (sw1Code!=null){
-                sectorRedisIndexMap.put(sw2Code,sectorRedisIndexMap.get(sw1Code));
-                sectorRedisIndexMap.put(sw3Code,sectorRedisIndexMap.get(sw1Code));
-            }
-            else{
-                sectorRedisIndexMap.put(sw2Code,0);
-                sectorRedisIndexMap.put(sw3Code,0);
-            }
-        }
-        return sectorRedisIndexMap;
-    }
-
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, ParseException {
 //        getSectorRedisIndexMap();
