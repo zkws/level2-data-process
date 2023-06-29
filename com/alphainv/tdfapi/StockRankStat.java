@@ -42,7 +42,7 @@ public class StockRankStat implements Runnable{
             String oraclePd = "tmd242209";
             Connection oracleCon = null;
             oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
-            Statement s = oracleCon.createStatement();
+            Statement oracleStatement = oracleCon.createStatement();
             ArrayList<List<Map.Entry<String,Double>>> insertTableSourceList = new ArrayList<>();
             List<Map.Entry<String,Double>> weightedOrderBSRateEntryList = MapOrderByValueUtil.getMapOrderByValue(weightedOrderBSRateMapAll);
             insertTableSourceList.add(weightedOrderBSRateEntryList);
@@ -67,7 +67,7 @@ public class StockRankStat implements Runnable{
                         String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date)" +
                                 " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
                         System.out.println(insertSql);
-                        s.executeUpdate(insertSql);
+                        oracleStatement.executeUpdate(insertSql);
                     }
                 }
 
@@ -87,9 +87,9 @@ public class StockRankStat implements Runnable{
                 String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date)" +
                         "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
                 System.out.println(insertSql);
-                s.executeUpdate(insertSql);
+                oracleStatement.executeUpdate(insertSql);
             }
-            s.close();
+            oracleStatement.close();
             oracleCon.close();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
