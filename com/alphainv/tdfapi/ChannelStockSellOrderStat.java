@@ -14,23 +14,33 @@ public class ChannelStockSellOrderStat implements Runnable{
 
     private ConcurrentHashMap<String,Long> orderSellMap;
 
+    private ConcurrentHashMap<String,Double> orderSellWeightedMap;
+
     private ConcurrentHashMap<String,Long> order5MSellMap;
 
-    private ConcurrentHashMap<String,Double> orderSellWeightedMap;
+    private ConcurrentHashMap<String,Long> orderSellTrueMap;
+
+    private ConcurrentHashMap<String,Double> orderSellWeightedTrueMap;
+
+    private ConcurrentHashMap<String,Long> order5MSellTrueMap;
+
 
     public void setQuitFlag(Boolean para) {
         this.quitFlag = para;
     }
 
-    ChannelStockSellOrderStat(BlockingQueue<Object[]> orderSellQueue,
-                              ConcurrentHashMap<String,Long> newestPriceMap, ConcurrentHashMap<String,Integer> highLimitFlagMap,
-                              ConcurrentHashMap<String,Long> orderSellMap, ConcurrentHashMap<String,Double> orderSellWeightedMap, ConcurrentHashMap<String,Long> order5MSellMap){
-        this.orderSellQueue=orderSellQueue;
-        this.newestPriceMap=newestPriceMap;
-        this.highLimitFlagMap=highLimitFlagMap;
-        this.orderSellMap=orderSellMap;
-        this.orderSellWeightedMap=orderSellWeightedMap;
-        this.order5MSellMap=order5MSellMap;
+    public ChannelStockSellOrderStat(BlockingQueue<Object[]> orderSellQueue, ConcurrentHashMap<String, Long> newestPriceMap, ConcurrentHashMap<String, Integer> highLimitFlagMap,
+                                     ConcurrentHashMap<String, Long> orderSellMap, ConcurrentHashMap<String, Double> orderSellWeightedMap, ConcurrentHashMap<String, Long> order5MSellMap,
+                                     ConcurrentHashMap<String, Long> orderSellTrueMap, ConcurrentHashMap<String, Double> orderSellWeightedTrueMap, ConcurrentHashMap<String, Long> order5MSellTrueMap) {
+        this.orderSellQueue = orderSellQueue;
+        this.newestPriceMap = newestPriceMap;
+        this.highLimitFlagMap = highLimitFlagMap;
+        this.orderSellMap = orderSellMap;
+        this.orderSellWeightedMap = orderSellWeightedMap;
+        this.order5MSellMap = order5MSellMap;
+        this.orderSellTrueMap = orderSellTrueMap;
+        this.orderSellWeightedTrueMap = orderSellWeightedTrueMap;
+        this.order5MSellTrueMap = order5MSellTrueMap;
     }
 
     @Override
@@ -52,9 +62,10 @@ public class ChannelStockSellOrderStat implements Runnable{
                 Double weightedOrderTotalValue = 0D;
                 long highLimitTurnover = newestPrice*highLimitOrderNum;
                 synchronized(orderSellMap){
-                    orderTotalValue = orderSellMap.get(stkCode);
+                    orderTotalValue = orderSellTrueMap.get(stkCode);
                     orderTotalValue = orderTotalValue!= null?orderTotalValue:0;
                     newOrderTotalValue = orderTotalValue+turnoverValue;
+                    orderSellTrueMap.put(stkCode,newOrderTotalValue);
                     if (null!=highLimitFlag&&highLimitFlag.equals(1)){
 //                    long highLimitTurnover = newestPrice*highLimitOrderNum/10000;
                         if (newOrderTotalValue<highLimitTurnover){
@@ -67,9 +78,10 @@ public class ChannelStockSellOrderStat implements Runnable{
                 Double weightedTurnoverValue = orderPriceWeight*turnoverValue;
 
                 synchronized(orderSellWeightedMap){
-                    weightedOrderTotalValue = orderSellWeightedMap.get(stkCode);
+                    weightedOrderTotalValue = orderSellWeightedTrueMap.get(stkCode);
                     weightedOrderTotalValue = weightedOrderTotalValue!= null?weightedOrderTotalValue:0;
                     newWeightedOrderTotalValue = weightedOrderTotalValue+weightedTurnoverValue;
+                    orderSellWeightedTrueMap.put(stkCode,newWeightedOrderTotalValue);
                     if (null!=highLimitFlag&&highLimitFlag.equals(1)){
 //                    long lowLimitTurnover = newestPrice*lowLimitOrderNum/10000;
                         if (newWeightedOrderTotalValue<highLimitTurnover){
@@ -80,9 +92,10 @@ public class ChannelStockSellOrderStat implements Runnable{
                 }
 
                 synchronized(order5MSellMap){
-                    Long order5MTotalValue = order5MSellMap.get(stkCode);
+                    Long order5MTotalValue = order5MSellTrueMap.get(stkCode);
                     order5MTotalValue = order5MTotalValue!= null?order5MTotalValue:0;
                     new5MOrderTotalValue = order5MTotalValue+turnoverValue;
+                    order5MSellTrueMap.put(stkCode,new5MOrderTotalValue);
                     if (null!=highLimitFlag&&highLimitFlag.equals(1)){
 //                    long highLimitTurnover = newestPrice*highLimitOrderNum/10000;
                         if (new5MOrderTotalValue < highLimitTurnover){

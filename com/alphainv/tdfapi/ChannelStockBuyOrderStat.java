@@ -18,19 +18,28 @@ public class ChannelStockBuyOrderStat implements Runnable{
 
     private ConcurrentHashMap<String,Long> order5MBuyMap;
 
+    private ConcurrentHashMap<String,Long> orderBuyTrueMap;
+
+    private ConcurrentHashMap<String,Double> orderBuyWeightedTrueMap;
+
+    private ConcurrentHashMap<String,Long> order5MBuyTrueMap;
+
     public void setQuitFlag(Boolean para) {
         this.quitFlag = para;
     }
 
-    ChannelStockBuyOrderStat(BlockingQueue<Object[]> orderBuyQueue,
-                          ConcurrentHashMap<String,Long> newestPriceMap,ConcurrentHashMap<String,Integer> lowLimitFlagMap,
-                          ConcurrentHashMap<String,Long> orderBuyMap,ConcurrentHashMap<String,Double> orderBuyWeightedMap,ConcurrentHashMap<String,Long> order5MBuyMap){
-        this.orderBuyQueue=orderBuyQueue;
-        this.newestPriceMap=newestPriceMap;
-        this.lowLimitFlagMap=lowLimitFlagMap;
-        this.orderBuyMap=orderBuyMap;
-        this.orderBuyWeightedMap=orderBuyWeightedMap;
-        this.order5MBuyMap=order5MBuyMap;
+    public ChannelStockBuyOrderStat(BlockingQueue<Object[]> orderBuyQueue, ConcurrentHashMap<String, Long> newestPriceMap, ConcurrentHashMap<String, Integer> lowLimitFlagMap,
+                                    ConcurrentHashMap<String, Long> orderBuyMap, ConcurrentHashMap<String, Double> orderBuyWeightedMap, ConcurrentHashMap<String, Long> order5MBuyMap,
+                                    ConcurrentHashMap<String, Long> orderBuyTrueMap, ConcurrentHashMap<String, Double> orderBuyWeightedTrueMap, ConcurrentHashMap<String, Long> order5MBuyTrueMap) {
+        this.orderBuyQueue = orderBuyQueue;
+        this.newestPriceMap = newestPriceMap;
+        this.lowLimitFlagMap = lowLimitFlagMap;
+        this.orderBuyMap = orderBuyMap;
+        this.orderBuyWeightedMap = orderBuyWeightedMap;
+        this.order5MBuyMap = order5MBuyMap;
+        this.orderBuyTrueMap = orderBuyTrueMap;
+        this.orderBuyWeightedTrueMap = orderBuyWeightedTrueMap;
+        this.order5MBuyTrueMap = order5MBuyTrueMap;
     }
 
     @Override
@@ -52,9 +61,10 @@ public class ChannelStockBuyOrderStat implements Runnable{
                 Double weightedOrderTotalValue = 0D;
                 long lowLimitTurnover = newestPrice*lowLimitOrderNum;
                 synchronized(orderBuyMap){
-                    orderTotalValue = orderBuyMap.get(stkCode);
+                    orderTotalValue = orderBuyTrueMap.get(stkCode);
                     orderTotalValue = orderTotalValue!= null?orderTotalValue:0;
                     newOrderTotalValue = orderTotalValue+turnoverValue;
+                    orderBuyTrueMap.put(stkCode,newOrderTotalValue);
                     if (null!=lowLimitFlag&&lowLimitFlag.equals(1)){
 //                    long lowLimitTurnover = newestPrice*lowLimitOrderNum/10000;
                         if (newOrderTotalValue<lowLimitTurnover){
@@ -67,9 +77,10 @@ public class ChannelStockBuyOrderStat implements Runnable{
                 Double weightedTurnoverValue = orderPriceWeight*turnoverValue;
 
                 synchronized(orderBuyWeightedMap){
-                    weightedOrderTotalValue = orderBuyWeightedMap.get(stkCode);
+                    weightedOrderTotalValue = orderBuyWeightedTrueMap.get(stkCode);
                     weightedOrderTotalValue = weightedOrderTotalValue!= null?weightedOrderTotalValue:0;
                     newWeightedOrderTotalValue = weightedOrderTotalValue+weightedTurnoverValue;
+                    orderBuyWeightedTrueMap.put(stkCode,newWeightedOrderTotalValue);
                     if (null!=lowLimitFlag&&lowLimitFlag.equals(1)){
 //                    long lowLimitTurnover = newestPrice*lowLimitOrderNum/10000;
                         if (newWeightedOrderTotalValue<lowLimitTurnover){
@@ -79,9 +90,10 @@ public class ChannelStockBuyOrderStat implements Runnable{
                     orderBuyWeightedMap.put(stkCode,newWeightedOrderTotalValue);
                 }
                 synchronized(order5MBuyMap){
-                    Long order5MTotalValue = order5MBuyMap.get(stkCode);
+                    Long order5MTotalValue = order5MBuyTrueMap.get(stkCode);
                     order5MTotalValue = order5MTotalValue!= null?order5MTotalValue:0;
                     new5MOrderTotalValue = order5MTotalValue+turnoverValue;
+                    order5MBuyTrueMap.put(stkCode,new5MOrderTotalValue);
                     if (null!=lowLimitFlag&&lowLimitFlag.equals(1)){
 //                    long lowLimitTurnover = newestPrice*lowLimitOrderNum/10000;
                         if (new5MOrderTotalValue<lowLimitTurnover){

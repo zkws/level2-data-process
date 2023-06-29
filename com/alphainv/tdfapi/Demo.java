@@ -430,8 +430,22 @@ public class Demo {
             ConcurrentHashMap<String,Long> transBuyMap = channelQueueDataInstance.getTransBuyMap();
             ConcurrentHashMap<String,Long> transSellMap = channelQueueDataInstance.getTransSellMap();
 
-            ChannelStockBuyOrderStat channelStockBuyOrderStat = new ChannelStockBuyOrderStat(orderBuyQueue,newestPriceMap,lowLimitFlagMap,orderBuyMap,orderBuyWeightedMap,order5MBuyMap);
-            ChannelStockSellOrderStat channelStockSellOrderStat = new ChannelStockSellOrderStat(orderSellQueue,newestPriceMap,highLimitFlagMap,orderSellMap,orderSellWeightedMap,order5MSellMap);
+            ConcurrentHashMap<String,Long> orderBuyTrueMap = channelQueueDataInstance.getOrderBuyTrueMap();
+            ConcurrentHashMap<String,Long> orderSellTrueMap = channelQueueDataInstance.getOrderSellTrueMap();
+            ConcurrentHashMap<String,Double> orderBuyWeightedTrueMap = channelQueueDataInstance.getOrderBuyWeightedTrueMap();
+            ConcurrentHashMap<String,Double> orderSellWeightedTrueMap = channelQueueDataInstance.getOrderSellWeightedTrueMap();
+            ConcurrentHashMap<String,Long> order5MBuyTrueMap = channelQueueDataInstance.getOrder5MBuyTrueMap();
+            ConcurrentHashMap<String,Long> order5MSellTrueMap = channelQueueDataInstance.getOrder5MSellTrueMap();
+
+
+            ChannelStockBuyOrderStat channelStockBuyOrderStat = new ChannelStockBuyOrderStat(orderBuyQueue,newestPriceMap,lowLimitFlagMap,
+                    orderBuyMap,orderBuyWeightedMap,order5MBuyMap,
+                    orderBuyTrueMap,orderBuyWeightedTrueMap,order5MBuyTrueMap
+            );
+            ChannelStockSellOrderStat channelStockSellOrderStat = new ChannelStockSellOrderStat(orderSellQueue,newestPriceMap,highLimitFlagMap,
+                    orderSellMap,orderSellWeightedMap,order5MSellMap,
+                    orderSellTrueMap,orderSellWeightedTrueMap,order5MSellTrueMap
+            );
             ChannelStock5MBuyOrderStat channelStock5MBuyOrderStat = new ChannelStock5MBuyOrderStat(m5OrderBuyDelayQueue,order5MBuyMap);
             ChannelStock5MSellOrderStat channelStock5MSellOrderStat = new ChannelStock5MSellOrderStat(m5OrderSellDelayQueue,order5MSellMap);
             ChannelStockBuyTransStat channelStockBuyTransStat = new ChannelStockBuyTransStat(transBuyQueue,transBuyMap);

@@ -47,6 +47,18 @@ public class ChannelQueueData {
 
     private ConcurrentHashMap<String,Long> order5MSellMap = new ConcurrentHashMap<String,Long>();
 
+    private ConcurrentHashMap<String,Long> orderBuyTrueMap = new ConcurrentHashMap<String,Long>();
+
+    private ConcurrentHashMap<String,Long> orderSellTrueMap = new ConcurrentHashMap<String,Long>();
+
+    private ConcurrentHashMap<String,Double> orderBuyWeightedTrueMap = new ConcurrentHashMap<String,Double>();
+
+    private ConcurrentHashMap<String,Double> orderSellWeightedTrueMap = new ConcurrentHashMap<String,Double>();
+
+    private ConcurrentHashMap<String,Long> order5MBuyTrueMap = new ConcurrentHashMap<String,Long>();
+
+    private ConcurrentHashMap<String,Long> order5MSellTrueMap = new ConcurrentHashMap<String,Long>();
+
     private ConcurrentHashMap<String,Long> transBuyMap = new ConcurrentHashMap<String,Long>();
 
     private ConcurrentHashMap<String,Long> transSellMap = new ConcurrentHashMap<String,Long>();
@@ -137,6 +149,30 @@ public class ChannelQueueData {
 
     public ConcurrentHashMap<String, Long> getLowLimitPriceMap() {
         return lowLimitPriceMap;
+    }
+
+    public ConcurrentHashMap<String, Long> getOrderBuyTrueMap() {
+        return orderBuyTrueMap;
+    }
+
+    public ConcurrentHashMap<String, Long> getOrderSellTrueMap() {
+        return orderSellTrueMap;
+    }
+
+    public ConcurrentHashMap<String, Double> getOrderBuyWeightedTrueMap() {
+        return orderBuyWeightedTrueMap;
+    }
+
+    public ConcurrentHashMap<String, Double> getOrderSellWeightedTrueMap() {
+        return orderSellWeightedTrueMap;
+    }
+
+    public ConcurrentHashMap<String, Long> getOrder5MBuyTrueMap() {
+        return order5MBuyTrueMap;
+    }
+
+    public ConcurrentHashMap<String, Long> getOrder5MSellTrueMap() {
+        return order5MSellTrueMap;
     }
 
     ChannelQueueData(String channelCode){
