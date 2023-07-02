@@ -15,17 +15,19 @@ public class MarketDataInfoWrite implements Runnable{
     ChannelQueueData[] channelQueueDataArray;
     HashMap<String,Integer> channelCodeMap;
     HashMap<String,String> stkChannelMap;
+    ConcurrentHashMap<String,Integer> highLimitFlagMapAll;
     JedisPool jedisPool;
 
     MarketDataInfoWrite(BlockingQueue<MarketDataInfo> marketDataInfoQueue,ChannelQueueData[] channelQueueDataArray,
                         HashMap<String,Integer> channelCodeMap,HashMap<String,String> stkChannelMap,
-                        JedisPool jedisPool
+                        JedisPool jedisPool,ConcurrentHashMap<String,Integer> highLimitFlagMapAll
     ){
         this.marketDataInfoQueue = marketDataInfoQueue;
         this.channelQueueDataArray = channelQueueDataArray;
         this.channelCodeMap = channelCodeMap;
         this.stkChannelMap = stkChannelMap;
         this.jedisPool = jedisPool;
+        this.highLimitFlagMapAll = highLimitFlagMapAll;
     }
 
     public void setQuitFlag(Boolean para) {
@@ -82,10 +84,12 @@ public class MarketDataInfoWrite implements Runnable{
                         }
                         if (recentPrice.equals(highLimit)||recentPrice>highLimit){
                             highLimitFlagMap.put(singleStockCodeNum, 1);
+                            highLimitFlagMapAll.put(singleStockCodeNum, 1);
                             realJedisInstance.set(highLimitKey,"1");
                         }
                         else {
                             highLimitFlagMap.put(singleStockCodeNum, 0);
+                            highLimitFlagMapAll.put(singleStockCodeNum, 0);
                             realJedisInstance.set(highLimitKey,"0");
                         }
                         if (recentPrice.equals(lowLimit)||recentPrice<highLimit){

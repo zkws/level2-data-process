@@ -392,7 +392,7 @@ public class Demo {
         ConcurrentHashMap<String,Double> orderBsRateMapALL = new ConcurrentHashMap<String,Double>();
         ConcurrentHashMap<String,Double> transBsRateMapALL = new ConcurrentHashMap<String,Double>();
         ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL = new ConcurrentHashMap<String, ArrayList<Double>>();
-
+        ConcurrentHashMap<String,Integer> highLimitFlagMapAll = new ConcurrentHashMap<String,Integer>();
 
         TaskQueueDaemonThread taskQueueDaemonThread = TaskQueueDaemonThread.getInstance();
         taskQueueDaemonThread.init();
@@ -401,7 +401,7 @@ public class Demo {
         OrderDataInfoWrite orderDataInfoWriteInstance = new OrderDataInfoWrite(channelQueueDataArray,orderDataInfoQueue,channelCodeMap,stkChannelMap);
         taskQueueDaemonThread.put(0,orderDataInfoWriteInstance);
 
-        MarketDataInfoWrite marketDataInfoWriteInstance = new MarketDataInfoWrite(marketDataInfoQueue,channelQueueDataArray,channelCodeMap,stkChannelMap,jedisPool);
+        MarketDataInfoWrite marketDataInfoWriteInstance = new MarketDataInfoWrite(marketDataInfoQueue,channelQueueDataArray,channelCodeMap,stkChannelMap,jedisPool,highLimitFlagMapAll);
         taskQueueDaemonThread.put(0,marketDataInfoWriteInstance);
 
         for (int i=0;i<1;i++){
@@ -429,7 +429,6 @@ public class Demo {
             ConcurrentHashMap<String,Long> order5MSellMap = channelQueueDataInstance.getOrder5MSellMap();
             ConcurrentHashMap<String,Long> transBuyMap = channelQueueDataInstance.getTransBuyMap();
             ConcurrentHashMap<String,Long> transSellMap = channelQueueDataInstance.getTransSellMap();
-
             ConcurrentHashMap<String,Long> orderBuyTrueMap = channelQueueDataInstance.getOrderBuyTrueMap();
             ConcurrentHashMap<String,Long> orderSellTrueMap = channelQueueDataInstance.getOrderSellTrueMap();
             ConcurrentHashMap<String,Double> orderBuyWeightedTrueMap = channelQueueDataInstance.getOrderBuyWeightedTrueMap();
@@ -502,7 +501,7 @@ public class Demo {
             newDate.setTime(realStatDateLong);
             String fullDfStr = fullDF.format(newDate);
             System.out.println(fullDfStr+"预计进行Oracle操作");
-            StockRankStat stockRankStat = new StockRankStat(weightedOrderBSRateMapAll,orderBsRateMapALL,transBsRateMapALL,compositeScoreMapALL,fullDfStr);
+            StockRankStat stockRankStat = new StockRankStat(weightedOrderBSRateMapAll,orderBsRateMapALL,transBsRateMapALL,compositeScoreMapALL,highLimitFlagMapAll,fullDfStr);
             taskQueueDaemonThread.put(delayTime,stockRankStat);
         }
 

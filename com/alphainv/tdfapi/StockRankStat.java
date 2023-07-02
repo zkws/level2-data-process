@@ -15,18 +15,21 @@ public class StockRankStat implements Runnable{
     ConcurrentHashMap<String,Double> orderBsRateMapALL;
     ConcurrentHashMap<String,Double> transBsRateMapALL;
     ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL;
+    ConcurrentHashMap<String,Integer> highLimitFlagMapAll;
     String insertStatTime;
 
     public StockRankStat(ConcurrentHashMap<String, Double> weightedOrderBSRateMapAll,
                          ConcurrentHashMap<String, Double> orderBsRateMapALL,
                          ConcurrentHashMap<String, Double> transBsRateMapALL,
                          ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL,
+                         ConcurrentHashMap<String,Integer> highLimitFlagMapAll,
                          String insertStatTime) {
         this.weightedOrderBSRateMapAll = weightedOrderBSRateMapAll;
         this.orderBsRateMapALL = orderBsRateMapALL;
         this.transBsRateMapALL = transBsRateMapALL;
         this.compositeScoreMapALL = compositeScoreMapALL;
         this.insertStatTime = insertStatTime;
+        this.highLimitFlagMapAll = highLimitFlagMapAll;
     }
 
     @Override
@@ -62,10 +65,12 @@ public class StockRankStat implements Runnable{
                     for (int j = 0; j < 50; j++) {
                         Map.Entry<String,Double> singleStkEntry = insertEntryList.get(i);
                         String stkCode = singleStkEntry.getKey();
+                        Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
+                        highLimitFlag = highLimitFlag != null?highLimitFlag:0;
                         String insertFieldNameValue = String.format("%.1f",singleStkEntry.getValue());
                         String insertFieldNameRankValue = String.valueOf(i);
-                        String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date)" +
-                                " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
+                        String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date,high_limit_flag)" +
+                                " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
                         System.out.println(insertSql);
                         oracleStatement.executeUpdate(insertSql);
                     }
@@ -79,13 +84,15 @@ public class StockRankStat implements Runnable{
             for (int i = 0; i <50 ; i++) {
                 Map.Entry<String,ArrayList<Double>> compositeScoreEntry = compositeScoreEntryList.get(i);
                 String stkCode = compositeScoreEntry.getKey();
+                Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
+                highLimitFlag = highLimitFlag != null?highLimitFlag:0;
                 ArrayList<Double> valueList = compositeScoreEntry.getValue();
                 String CScoreValue = String.format("%.1f",valueList.get(2));
                 String CScoreValueRankValue = String.valueOf(i);
                 String weightedOrderBSRateValue = String.format("%.1f",valueList.get(0));
                 String transBSRateValue = String.format("%.1f",valueList.get(1));
-                String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date)" +
-                        "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
+                String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date,high_limit_flag)" +
+                        "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
                 System.out.println(insertSql);
                 oracleStatement.executeUpdate(insertSql);
             }
