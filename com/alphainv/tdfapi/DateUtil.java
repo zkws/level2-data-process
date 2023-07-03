@@ -76,8 +76,17 @@ public class DateUtil {
     }
 
     public static void main(String[] args) throws ParseException {
-//        getdelayTimeList();
-//        System.out.println(delayTimeList.size());
-//        System.out.println(fullDF.format(new Date()));
+//        SimpleDateFormat fullDF = new SimpleDateFormat("yyyyMMdd-HHmmss");
+//        Date statDate = new Date();
+//        long statDateLong = statDate.getTime();
+////        long statDateLong  = fullDF.parse("20230704-091500").getTime();
+//        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L);
+//        for (Long delayTime:delayTimeList) {
+//            long realStatDateLong =statDateLong+delayTime;
+//            Date newDate = new Date();
+//            newDate.setTime(realStatDateLong);
+//            String fullDfStr = fullDF.format(newDate);
+//            System.out.println(fullDfStr+"预计");
+//        }
     }
 }
