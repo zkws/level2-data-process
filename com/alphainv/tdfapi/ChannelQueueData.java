@@ -9,7 +9,11 @@ public class ChannelQueueData {
 
     private String channelCode;
 
-    private Long[] orderPriceArray = new Long[300000000];
+    private Long[] orderPriceArray = new Long[100000000];
+
+    private Double[] orderSHPriceWeightArray = new Double[100000000];
+
+    private Double[] orderSZPriceWeightArray = new Double[100000000];
 
     private BlockingQueue<Object[]> orderBuyQueue = new LinkedBlockingQueue<Object[]>();
 
@@ -173,6 +177,14 @@ public class ChannelQueueData {
 
     public ConcurrentHashMap<String, Long> getOrder5MSellTrueMap() {
         return order5MSellTrueMap;
+    }
+
+    public Double[] getOrderSHPriceWeightArray() {
+        return orderSHPriceWeightArray;
+    }
+
+    public Double[] getOrderSZPriceWeightArray() {
+        return orderSZPriceWeightArray;
     }
 
     ChannelQueueData(String channelCode){

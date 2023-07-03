@@ -51,7 +51,7 @@ public class ChannelStockSellOrderStat implements Runnable{
                 Long highLimitOrderNum = 10000L;
                 String stkCode = (String) sellOrderArray[0];
                 Long turnoverValue = (Long)sellOrderArray[1];
-                Long orderPrice = (Long)sellOrderArray[2];
+                Double weightedTurnoverValue = (Double)sellOrderArray[2];
                 Integer highLimitFlag = highLimitFlagMap.get(stkCode);
                 Long newestPrice = newestPriceMap.get(stkCode);
                 newestPrice = newestPrice!= null?newestPrice:0;
@@ -74,8 +74,6 @@ public class ChannelStockSellOrderStat implements Runnable{
                     }
                     orderSellMap.put(stkCode,newOrderTotalValue);
                 }
-                double orderPriceWeight = WeightCalUtil.getOrderPriceWeight(newestPrice,orderPrice);
-                Double weightedTurnoverValue = orderPriceWeight*turnoverValue;
 
                 synchronized(orderSellWeightedMap){
                     weightedOrderTotalValue = orderSellWeightedTrueMap.get(stkCode);

@@ -39,17 +39,17 @@ public class DateUtil {
         if (statDateLong<amCloseTimeLong){
             if (statDateLong<amOpenTimeLong){
                 amBaseTimeLong = amOpenTimeLong-statDateLong;
-                amMaxNum = (amCloseTimeLong-amOpenTimeLong)/intervalMilliSecond+30;
+                amMaxNum = (amCloseTimeLong-amOpenTimeLong)/intervalMilliSecond+3;
             }
             else{
-                amMaxNum = (amCloseTimeLong-statDateLong)/intervalMilliSecond+30;
+                amMaxNum = (amCloseTimeLong-statDateLong)/intervalMilliSecond+3;
             }
             for (long i=0;i<amMaxNum;i++){
                 delayTimeList.add(amBaseTimeLong+(i*intervalMilliSecond));
 //                System.out.println(amBaseTimeLong+(i*1000));
             }
             pmBaseTimeLong = pmOpenTimeLong-statDateLong;
-            pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+30;
+            pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+3;
             for (long i=0;i<pmMaxNum;i++){
                 delayTimeList.add(pmBaseTimeLong+(i*intervalMilliSecond));
 //                System.out.println(pmBaseTimeLong+(i*1000));
@@ -59,10 +59,10 @@ public class DateUtil {
             if (statDateLong<pmCloseTimeLong){
                 if (statDateLong<pmOpenTimeLong){
                     pmBaseTimeLong = pmOpenTimeLong-statDateLong;
-                    pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+30;
+                    pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+3;
                 }
                 else{
-                    pmMaxNum = (pmCloseTimeLong-statDateLong)/intervalMilliSecond+30;
+                    pmMaxNum = (pmCloseTimeLong-statDateLong)/intervalMilliSecond+3;
                 }
                 for (long i=0;i<pmMaxNum;i++){
                     delayTimeList.add(pmBaseTimeLong+(i*intervalMilliSecond));

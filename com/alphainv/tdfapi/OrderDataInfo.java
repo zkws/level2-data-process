@@ -9,8 +9,9 @@ public class OrderDataInfo {
     private Integer orderCode;
     private Integer channelId;
     private Long orderPrice;
+    private Long orderOriNo;
 
-    OrderDataInfo(String exchangeTime, String stockCode, Character stkFunctionCode, Character stkOrderKind, Integer channelId, Integer orderVolume, Integer orderCode, Long orderPrice){
+    OrderDataInfo(String exchangeTime, String stockCode, Character stkFunctionCode, Character stkOrderKind, Integer channelId, Integer orderVolume, Integer orderCode, Long orderPrice, Long orderOriNo){
         this.stkFunctionCode = stkFunctionCode;
         this.stkOrderKind = stkOrderKind;
         this.channelId = channelId;
@@ -19,6 +20,7 @@ public class OrderDataInfo {
         this.orderVolume = orderVolume;
         this.orderCode = orderCode;
         this.orderPrice = orderPrice;
+        this.orderOriNo = orderOriNo;
     }
 
     public String getExchangeTime() {
@@ -51,5 +53,9 @@ public class OrderDataInfo {
 
     public Long getOrderPrice() {
         return orderPrice;
+    }
+
+    public Long getOrderOriNo() {
+        return orderOriNo;
     }
 }

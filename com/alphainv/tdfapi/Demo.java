@@ -286,7 +286,8 @@ public class Demo {
                                 order_data.getChannel(),
                                 order_data.getVolume(),
                                 order_data.getOrder(),
-                                order_data.getPrice()
+                                order_data.getPrice(),
+                                order_data.getOrderOriNo()
                         );
                         orderDataInfoQueue.put(orderDataInfoInstance);
                         orderCount++;
@@ -398,17 +399,14 @@ public class Demo {
         taskQueueDaemonThread.init();
         taskQueueDaemonThread.put(0,dh);
 
-        OrderDataInfoWrite orderDataInfoWriteInstance = new OrderDataInfoWrite(channelQueueDataArray,orderDataInfoQueue,channelCodeMap,stkChannelMap);
-        taskQueueDaemonThread.put(0,orderDataInfoWriteInstance);
-
         MarketDataInfoWrite marketDataInfoWriteInstance = new MarketDataInfoWrite(marketDataInfoQueue,channelQueueDataArray,channelCodeMap,stkChannelMap,jedisPool,highLimitFlagMapAll);
         taskQueueDaemonThread.put(0,marketDataInfoWriteInstance);
 
-        for (int i=0;i<1;i++){
-            TransactionDataInfoWrite transactionDataInfoWriteInstance = new TransactionDataInfoWrite(channelQueueDataArray, transactionDataInfoQueue, channelCodeMap);
-            taskQueueDaemonThread.put(10000,transactionDataInfoWriteInstance);
-        }
+        OrderDataInfoWrite orderDataInfoWriteInstance = new OrderDataInfoWrite(channelQueueDataArray,orderDataInfoQueue,channelCodeMap,stkChannelMap);
+        taskQueueDaemonThread.put(10000,orderDataInfoWriteInstance);
 
+        TransactionDataInfoWrite transactionDataInfoWriteInstance = new TransactionDataInfoWrite(channelQueueDataArray, transactionDataInfoQueue, channelCodeMap);
+        taskQueueDaemonThread.put(10000,transactionDataInfoWriteInstance);
 
         for (int i=0;i<channelArray.length;i++){
             ChannelQueueData channelQueueDataInstance = channelQueueDataArray[i];

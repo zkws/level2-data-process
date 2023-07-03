@@ -71,7 +71,7 @@ public class StockRankStat implements Runnable{
                         String insertFieldNameRankValue = String.valueOf(i);
                         String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date,high_limit_flag)" +
                                 " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
-                        System.out.println(insertSql);
+//                        System.out.println(insertSql);
                         oracleStatement.executeUpdate(insertSql);
                     }
                 }
@@ -93,7 +93,7 @@ public class StockRankStat implements Runnable{
                 String transBSRateValue = String.format("%.1f",valueList.get(1));
                 String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date,high_limit_flag)" +
                         "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
-                System.out.println(insertSql);
+//                System.out.println(insertSql);
                 oracleStatement.executeUpdate(insertSql);
             }
             oracleStatement.close();
