@@ -8,8 +8,8 @@ import java.util.Date;
 public class DateUtil {
 
 
-
-    public static ArrayList<Long> getdelayTimeList(Long statDateLong, Long intervalMilliSecond) throws ParseException {
+//overTimeUnit 收盘后再继续工作多少个间隔的时间单位
+    public static ArrayList<Long> getdelayTimeList(Long statDateLong, Long intervalMilliSecond, int overTimeUnit) throws ParseException {
         SimpleDateFormat fullDF = new SimpleDateFormat("yyyyMMdd-HHmmss");
         SimpleDateFormat ymdDF = new SimpleDateFormat("yyyyMMdd");
 //        System.out.println(fullDF.format(new Date()));
@@ -39,17 +39,17 @@ public class DateUtil {
         if (statDateLong<amCloseTimeLong){
             if (statDateLong<amOpenTimeLong){
                 amBaseTimeLong = amOpenTimeLong-statDateLong;
-                amMaxNum = (amCloseTimeLong-amOpenTimeLong)/intervalMilliSecond+3;
+                amMaxNum = (amCloseTimeLong-amOpenTimeLong)/intervalMilliSecond+overTimeUnit;
             }
             else{
-                amMaxNum = (amCloseTimeLong-statDateLong)/intervalMilliSecond+3;
+                amMaxNum = (amCloseTimeLong-statDateLong)/intervalMilliSecond+overTimeUnit;
             }
             for (long i=0;i<amMaxNum;i++){
                 delayTimeList.add(amBaseTimeLong+(i*intervalMilliSecond));
 //                System.out.println(amBaseTimeLong+(i*1000));
             }
             pmBaseTimeLong = pmOpenTimeLong-statDateLong;
-            pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+3;
+            pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+overTimeUnit;
             for (long i=0;i<pmMaxNum;i++){
                 delayTimeList.add(pmBaseTimeLong+(i*intervalMilliSecond));
 //                System.out.println(pmBaseTimeLong+(i*1000));
@@ -59,10 +59,10 @@ public class DateUtil {
             if (statDateLong<pmCloseTimeLong){
                 if (statDateLong<pmOpenTimeLong){
                     pmBaseTimeLong = pmOpenTimeLong-statDateLong;
-                    pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+3;
+                    pmMaxNum = (pmCloseTimeLong-pmOpenTimeLong)/intervalMilliSecond+overTimeUnit;
                 }
                 else{
-                    pmMaxNum = (pmCloseTimeLong-statDateLong)/intervalMilliSecond+3;
+                    pmMaxNum = (pmCloseTimeLong-statDateLong)/intervalMilliSecond+overTimeUnit;
                 }
                 for (long i=0;i<pmMaxNum;i++){
                     delayTimeList.add(pmBaseTimeLong+(i*intervalMilliSecond));
@@ -80,7 +80,8 @@ public class DateUtil {
 //        Date statDate = new Date();
 //        long statDateLong = statDate.getTime();
 ////        long statDateLong  = fullDF.parse("20230704-091500").getTime();
-//        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L);
+////        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L,3);
+//        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,10000L,66);
 //        for (Long delayTime:delayTimeList) {
 //            long realStatDateLong =statDateLong+delayTime;
 //            Date newDate = new Date();

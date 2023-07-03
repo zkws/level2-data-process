@@ -462,7 +462,7 @@ public class Demo {
         Date statDate = new Date();
         long statDateLong = statDate.getTime();
 //        statDateLong = fullDF.parse("20230619-091500").getTime();
-        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,10000L);
+        ArrayList<Long> delayTimeList = DateUtil.getdelayTimeList(statDateLong,10000L,66);
 //        statDateLong = statDateLong-5000;
 
         for (Long delayTime:delayTimeList) {
@@ -490,7 +490,7 @@ public class Demo {
                 transBuyMapAll,transSellMapAll);
         taskQueueDaemonThread.put(0,allSectorStat);
 
-        ArrayList<Long> dbDelayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L);
+        ArrayList<Long> dbDelayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L,3);
 //        从9：20开始往oracle保存数据
         for (int i = 1; i < dbDelayTimeList.size(); i++) {
             Long delayTime = dbDelayTimeList.get(i);
