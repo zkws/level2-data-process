@@ -62,17 +62,27 @@ public class StockRankStat implements Runnable{
                 String insertTableName = insertTableNames[i];
                 List<Map.Entry<String,Double>> insertEntryList = insertTableSourceList.get(i);
                 if (insertEntryList.size()>0){
-                    for (int j = 0; j < 50; j++) {
-                        Map.Entry<String,Double> singleStkEntry = insertEntryList.get(i);
-                        String stkCode = singleStkEntry.getKey();
-                        Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
-                        highLimitFlag = highLimitFlag != null?highLimitFlag:0;
-                        String insertFieldNameValue = String.format("%.1f",singleStkEntry.getValue());
-                        String insertFieldNameRankValue = String.valueOf(i);
-                        String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date,high_limit_flag)" +
-                                " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
+                    int iterateIndex=1;
+                    int iterateCountWithoutHL=1;
+                    for (Map.Entry<String,Double> singleStkEntry:insertEntryList) {
+                        if (iterateCountWithoutHL<51){
+                            String stkCode = singleStkEntry.getKey();
+                            Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
+                            highLimitFlag = highLimitFlag != null?highLimitFlag:0;
+                            String insertFieldNameValue = String.format("%.1f",singleStkEntry.getValue());
+                            String insertFieldNameRankValue = String.valueOf(iterateIndex);
+                            String insertSql = "insert into "+insertTableName+" (stk_code,"+insertFieldName+","+insertFieldNameRank+",stat_time,stat_date,high_limit_flag)" +
+                                    " values('"+ stkCode +"',"+insertFieldNameValue+","+insertFieldNameRankValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
 //                        System.out.println(insertSql);
-                        oracleStatement.executeUpdate(insertSql);
+                            oracleStatement.executeUpdate(insertSql);
+                            if (highLimitFlag.equals("0")){
+                                iterateCountWithoutHL++;
+                            }
+                            iterateIndex++;
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
 
@@ -81,20 +91,30 @@ public class StockRankStat implements Runnable{
 //        System.out.println(swSql);
 
             List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntryList = MapOrderByValueUtil.getMapOrderByListValue(compositeScoreMapALL);
-            for (int i = 0; i <50 ; i++) {
-                Map.Entry<String,ArrayList<Double>> compositeScoreEntry = compositeScoreEntryList.get(i);
-                String stkCode = compositeScoreEntry.getKey();
-                Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
-                highLimitFlag = highLimitFlag != null?highLimitFlag:0;
-                ArrayList<Double> valueList = compositeScoreEntry.getValue();
-                String CScoreValue = String.format("%.1f",valueList.get(2));
-                String CScoreValueRankValue = String.valueOf(i);
-                String weightedOrderBSRateValue = String.format("%.1f",valueList.get(0));
-                String transBSRateValue = String.format("%.1f",valueList.get(1));
-                String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date,high_limit_flag)" +
-                        "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
+            int iterateIndex=1;
+            int iterateCountWithoutHL=1;
+            for (Map.Entry<String,ArrayList<Double>> compositeScoreEntry:compositeScoreEntryList) {
+                if (iterateCountWithoutHL<51){
+                    String stkCode = compositeScoreEntry.getKey();
+                    Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
+                    highLimitFlag = highLimitFlag != null?highLimitFlag:0;
+                    ArrayList<Double> valueList = compositeScoreEntry.getValue();
+                    String CScoreValue = String.format("%.1f",valueList.get(2));
+                    String CScoreValueRankValue = String.valueOf(iterateIndex);
+                    String weightedOrderBSRateValue = String.format("%.1f",valueList.get(0));
+                    String transBSRateValue = String.format("%.1f",valueList.get(1));
+                    String insertSql = "insert into C_SCORE_RANK_STAT (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date,high_limit_flag)" +
+                            "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
 //                System.out.println(insertSql);
-                oracleStatement.executeUpdate(insertSql);
+                    oracleStatement.executeUpdate(insertSql);
+                    if (highLimitFlag.equals("0")){
+                        iterateCountWithoutHL++;
+                    }
+                    iterateIndex++;
+                }
+                else {
+                    break;
+                }
             }
             oracleStatement.close();
             oracleCon.close();

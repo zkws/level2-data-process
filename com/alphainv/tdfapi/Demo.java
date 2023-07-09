@@ -491,8 +491,8 @@ public class Demo {
         taskQueueDaemonThread.put(0,allSectorStat);
 
         ArrayList<Long> dbDelayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L,3);
-//        从9：20开始往oracle保存数据
-        for (int i = 1; i < dbDelayTimeList.size(); i++) {
+//        从9：35开始往oracle保存数据
+        for (int i = 4; i < dbDelayTimeList.size(); i++) {
             Long delayTime = dbDelayTimeList.get(i);
             long realStatDateLong =statDateLong+delayTime;
             Date newDate = new Date();
