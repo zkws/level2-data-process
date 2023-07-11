@@ -107,7 +107,7 @@ public class StockRankStat implements Runnable{
                             "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
 //                System.out.println(insertSql);
                     oracleStatement.executeUpdate(insertSql);
-                    if (highLimitFlag.equals("0")){
+                    if (highLimitFlag.equals(0)){
                         iterateCountWithoutHL++;
                     }
                     iterateIndex++;
