@@ -490,7 +490,7 @@ public class Demo {
                 transBuyMapAll,transSellMapAll);
         taskQueueDaemonThread.put(0,allSectorStat);
 
-        ArrayList<Long> dbDelayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L,3);
+        ArrayList<Long> dbDelayTimeList = DateUtil.getdelayTimeList(statDateLong,300000L,2);
 //        从9：35开始往oracle保存数据
         for (int i = 4; i < dbDelayTimeList.size(); i++) {
             Long delayTime = dbDelayTimeList.get(i);
