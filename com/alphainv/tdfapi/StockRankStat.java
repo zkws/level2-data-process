@@ -111,7 +111,7 @@ public class StockRankStat implements Runnable{
                 int iterateIndex=1;
                 int iterateCountWithoutHL=1;
                 for (Map.Entry<String,Double> singleStkEntry:insertEntryList) {
-                    if (iterateCountWithoutHL<51){
+                    if (iterateCountWithoutHL<501){
                         String stkCode = singleStkEntry.getKey();
                         Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
                         highLimitFlag = highLimitFlag != null?highLimitFlag:0;
@@ -153,7 +153,7 @@ public class StockRankStat implements Runnable{
                 int iterateIndex=1;
                 int iterateCountWithoutHL=1;
                 for (Map.Entry<String,ArrayList<Double>> compositeScoreEntry:insertEntryList) {
-                    if (iterateCountWithoutHL<51){
+                    if (iterateCountWithoutHL<501){
                         String stkCode = compositeScoreEntry.getKey();
                         Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
                         highLimitFlag = highLimitFlag != null?highLimitFlag:0;
