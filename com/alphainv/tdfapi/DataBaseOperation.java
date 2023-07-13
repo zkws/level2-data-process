@@ -90,6 +90,26 @@ public class DataBaseOperation {
         return availableStkSet;
     }
 
+    public static HashSet<String> getTop20PercentStkSet() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        HashSet<String> top20PercentStkSet = new HashSet<>();
+        Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+        String url = "jdbc:jtds:sqlserver://10.23.188.51:1433/myStrategy";
+        String user = "sa";
+        String password = "Wpy021138";
+        Connection conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        String allPorttolioSql = "select * from (select row_number() over (partition by induCode order by wt_LS desc) as rankNum, count(induCode) over (partition by induCode) as partition_num, * from MP_STK_TGT_Alpha) t where t.rankNum < t.partition_num*0.2 or t.rankNum < 4;";
+        ResultSet allPorttolioResult = stmt.executeQuery(allPorttolioSql);
+//        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
+        while (allPorttolioResult.next()){
+            String stkCode = allPorttolioResult.getString("stkCode");
+            top20PercentStkSet.add(stkCode);
+        }
+        stmt.close();
+        conn.close();
+        return top20PercentStkSet;
+    }
+
     public static void main(String[] args){
 //        getSectorRedisIndexMap();
     }
