@@ -86,7 +86,7 @@ public class StockRankStat implements Runnable{
             }
         }
         processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT",compositeScoreEntryList,insertStatDate);
-        processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT_20",compositeScoreEntryList,insertStatDate);
+        processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT_20",compositeScoreEntry20PerList,insertStatDate);
 
 
 
