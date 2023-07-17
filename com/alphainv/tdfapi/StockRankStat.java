@@ -79,7 +79,7 @@ public class StockRankStat implements Runnable{
 
         List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntryList = MapOrderByValueUtil.getMapOrderByListValue(compositeScoreMapALL);
         List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntry20PerList = new ArrayList<Map.Entry<String,ArrayList<Double>>>();
-        for (Map.Entry<String,ArrayList<Double>> singleStkEntry:compositeScoreEntry20PerList) {
+        for (Map.Entry<String,ArrayList<Double>> singleStkEntry:compositeScoreEntryList) {
             String stkCode = singleStkEntry.getKey();
             if (Top20PercentStkSet!=null&&Top20PercentStkSet.contains(stkCode)){
                 compositeScoreEntry20PerList.add(singleStkEntry);
