@@ -48,8 +48,12 @@ public class StockRankStat implements Runnable{
         String[] insertTableNames = {"C_w_order_BS_Rate_RANK_STAT","C_order_BS_Rate_RANK_STAT","C_trans_Bs_Rate_RANK_STAT"};
 
         HashSet<String> Top20PercentStkSet = null;
+        HashSet<String> selectedPortfolioStkSet = null;
+        HashSet<String> boughtPortfolioStkSet = null;
         try {
             Top20PercentStkSet = DataBaseOperation.getTop20PercentStkSet();
+            selectedPortfolioStkSet = DataBaseOperation.getSelectedPortfolioStkSet();
+            boughtPortfolioStkSet = DataBaseOperation.getBoughtPortfolioStkSet();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -79,14 +83,24 @@ public class StockRankStat implements Runnable{
 
         List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntryList = MapOrderByValueUtil.getMapOrderByListValue(compositeScoreMapALL);
         List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntry20PerList = new ArrayList<Map.Entry<String,ArrayList<Double>>>();
+        List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntrySelectedList = new ArrayList<Map.Entry<String,ArrayList<Double>>>();
+        List<Map.Entry<String,ArrayList<Double>>> compositeScoreEntryBoughtList = new ArrayList<Map.Entry<String,ArrayList<Double>>>();
         for (Map.Entry<String,ArrayList<Double>> singleStkEntry:compositeScoreEntryList) {
             String stkCode = singleStkEntry.getKey();
             if (Top20PercentStkSet!=null&&Top20PercentStkSet.contains(stkCode)){
                 compositeScoreEntry20PerList.add(singleStkEntry);
             }
+            if (selectedPortfolioStkSet!=null&&selectedPortfolioStkSet.contains(stkCode)){
+                compositeScoreEntrySelectedList.add(singleStkEntry);
+            }
+            if (boughtPortfolioStkSet!=null&&boughtPortfolioStkSet.contains(stkCode)){
+                compositeScoreEntryBoughtList.add(singleStkEntry);
+            }
         }
         processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT",compositeScoreEntryList,insertStatDate);
         processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT_20",compositeScoreEntry20PerList,insertStatDate);
+        processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT_SEL",compositeScoreEntrySelectedList,insertStatDate);
+        processMutipleValueMapInsertOpration("C_SCORE_RANK_STAT_BOU",compositeScoreEntryBoughtList,insertStatDate);
 
 
 

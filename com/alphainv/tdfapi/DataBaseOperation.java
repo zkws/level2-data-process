@@ -110,6 +110,46 @@ public class DataBaseOperation {
         return top20PercentStkSet;
     }
 
+    public static HashSet<String> getSelectedPortfolioStkSet() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        HashSet<String> selectedPortfolioStkSet = new HashSet<>();
+        Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+        String url = "jdbc:jtds:sqlserver://10.23.188.51:1433/myStrategy";
+        String user = "sa";
+        String password = "Wpy021138";
+        Connection conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        String porttolioSql = "select distinct(stk_Code) from mp_stk_select;";
+        ResultSet porttolioResult = stmt.executeQuery(porttolioSql);
+//        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
+        while (porttolioResult.next()){
+            String stkCode = porttolioResult.getString("stkCode");
+            selectedPortfolioStkSet.add(stkCode);
+        }
+        stmt.close();
+        conn.close();
+        return selectedPortfolioStkSet;
+    }
+
+    public static HashSet<String> getBoughtPortfolioStkSet() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        HashSet<String> boughtPortfolioStkSet = new HashSet<>();
+        Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+        String url = "jdbc:jtds:sqlserver://10.23.188.51:1433/myStrategy";
+        String user = "sa";
+        String password = "Wpy021138";
+        Connection conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        String porttolioSql = "select distinct(stk_code) from MP_STK_PORTFOLIO where stk_code is not null and LEN(stk_code)>0;";
+        ResultSet porttolioResult = stmt.executeQuery(porttolioSql);
+//        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
+        while (porttolioResult.next()){
+            String stkCode = porttolioResult.getString("stkCode");
+            boughtPortfolioStkSet.add(stkCode);
+        }
+        stmt.close();
+        conn.close();
+        return boughtPortfolioStkSet;
+    }
+
     public static void main(String[] args){
 //        getSectorRedisIndexMap();
     }
