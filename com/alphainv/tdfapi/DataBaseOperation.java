@@ -122,7 +122,8 @@ public class DataBaseOperation {
         ResultSet porttolioResult = stmt.executeQuery(porttolioSql);
 //        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
         while (porttolioResult.next()){
-            String stkCode = porttolioResult.getString("stkCode");
+            String stkCode = porttolioResult.getString("stk_Code");
+//            System.out.println(stkCode);
             selectedPortfolioStkSet.add(stkCode);
         }
         stmt.close();
@@ -142,7 +143,8 @@ public class DataBaseOperation {
         ResultSet porttolioResult = stmt.executeQuery(porttolioSql);
 //        ArrayList<String> sectorStkCodeList = new ArrayList<String>();
         while (porttolioResult.next()){
-            String stkCode = porttolioResult.getString("stkCode");
+            String stkCode = porttolioResult.getString("stk_Code");
+//            System.out.println(stkCode);
             boughtPortfolioStkSet.add(stkCode);
         }
         stmt.close();
@@ -151,6 +153,16 @@ public class DataBaseOperation {
     }
 
     public static void main(String[] args){
-//        getSectorRedisIndexMap();
+//        try {
+//            getSelectedPortfolioStkSet();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
     }
 }
