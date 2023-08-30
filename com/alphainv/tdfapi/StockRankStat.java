@@ -105,6 +105,9 @@ public class StockRankStat implements Runnable{
         //将所有股票CScore数据写入oracle数据库
         processCScoreAllOpration(orderBsRateMapALL,compositeScoreMapALL,insertStatDate);
 
+        //将C-score倒数500名也写入数据库
+        processMutipleValueTailMapInsertOpration("C_SCORE_RANK_STAT_TAIL",compositeScoreEntryList,insertStatDate);
+
         Date finishTime = new Date();
         long finishLong = finishTime.getTime();
         int threadNum = Thread.currentThread().getThreadGroup().activeCount();
@@ -184,6 +187,51 @@ public class StockRankStat implements Runnable{
                             iterateCountWithoutHL++;
                         }
                         iterateIndex++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            oracleStatement.close();
+            oracleCon.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    //按倒数500名写入数据库
+    public void processMutipleValueTailMapInsertOpration(String insertTableName, List<Map.Entry<String,ArrayList<Double>>> insertEntryList, String insertStatDate){
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
+            String oracleUser = "iacore";
+            String oraclePd = "tmd242209";
+            Connection oracleCon = null;
+            oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
+            Statement oracleStatement = oracleCon.createStatement();
+            if (insertEntryList.size()>0){
+                int iterateCountWithoutHL=1;
+                for (int i = insertEntryList.size()-1; i >=0 ; i--) {
+                    Map.Entry<String,ArrayList<Double>> compositeScoreEntry = insertEntryList.get(i);
+                    if (iterateCountWithoutHL<501){
+                        String stkCode = compositeScoreEntry.getKey();
+                        Integer highLimitFlag = highLimitFlagMapAll.get(stkCode);
+                        highLimitFlag = highLimitFlag != null?highLimitFlag:0;
+                        ArrayList<Double> valueList = compositeScoreEntry.getValue();
+                        String CScoreValue = String.format("%.1f",valueList.get(2));
+                        String CScoreValueRankValue = String.valueOf(i+1);
+                        String weightedOrderBSRateValue = String.format("%.1f",valueList.get(0));
+                        String transBSRateValue = String.format("%.1f",valueList.get(1));
+                        String insertSql = "insert into "+insertTableName+" (stk_code, c_score_rank, c_score, w_order_BS_Rate, trans_Bs_Rate, stat_time,stat_date,high_limit_flag)" +
+                                "values('"+ stkCode +"',"+CScoreValueRankValue+","+CScoreValue+","+weightedOrderBSRateValue+","+transBSRateValue+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'),"+highLimitFlag+")";
+//                      System.out.println(insertSql);
+                        oracleStatement.executeUpdate(insertSql);
+                        if (highLimitFlag.equals(0)){
+                            iterateCountWithoutHL++;
+                        }
                     }
                     else {
                         break;
