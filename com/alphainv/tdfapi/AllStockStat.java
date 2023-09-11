@@ -34,6 +34,7 @@ public class AllStockStat implements Runnable{
     ConcurrentHashMap<String,Double> weightedOrderBSRateMapAll;
     ConcurrentHashMap<String,Double> transBsRateMapALL;
     ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL;
+    ConcurrentHashMap<String,Double> indexSDMapAll;
 
     public AllStockStat(HashMap<String, String> stkChannelMap, ChannelQueueData[] channelQueueDataArray,
                         HashMap<String, Integer> channelCodeMap, JedisPool jedisPool, String[] channelArray,
@@ -45,7 +46,8 @@ public class AllStockStat implements Runnable{
                         ConcurrentHashMap<String,Double> orderBsRateMapALL,
                         ConcurrentHashMap<String,Double> weightedOrderBSRateMapAll,
                         ConcurrentHashMap<String,Double> transBsRateMapALL,
-                        ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL
+                        ConcurrentHashMap<String, ArrayList<Double>> compositeScoreMapALL,
+                        ConcurrentHashMap<String,Double> indexSDMapAll
                         ) {
         this.stkChannelMap = stkChannelMap;
         this.channelQueueDataArray = channelQueueDataArray;
@@ -65,6 +67,7 @@ public class AllStockStat implements Runnable{
         this.weightedOrderBSRateMapAll = weightedOrderBSRateMapAll;
         this.transBsRateMapALL = transBsRateMapALL;
         this.compositeScoreMapALL = compositeScoreMapALL;
+        this.indexSDMapAll = indexSDMapAll;
     }
 
     @Override
@@ -99,6 +102,7 @@ public class AllStockStat implements Runnable{
                         String orderBSRateM5Key = ymdStr+"-"+stkCode+"-OBSRATEM5";
                         String orderBSRateM5SourceKey = ymdStr+"-"+stkCode+"-OBSRATEM5S";
                         String compositeScoreKey = ymdStr+"-"+stkCode+"-CSCORE";
+                        String bounceRateKey = ymdStr+"-"+stkCode+"-BOUNCERATE";
 
                         Long stkTransBuyValue = transBuyMap.get(stkCode);
                         stkTransBuyValue = stkTransBuyValue!= null?stkTransBuyValue:0;
@@ -123,6 +127,7 @@ public class AllStockStat implements Runnable{
                         String stkSDValue = stkSDMap.get(stkCode);
                         stkSDValue = stkSDValue!= null?stkSDValue:"0";
                         stkSDMapAll.put(stkCode,stkSDValue);
+                        Double stkSDValueDouble = stkSDValue!= null?Double.parseDouble(stkSDValue):0d;
 
                         Double stkOrderWeightedBuyValue = orderBuyWeightedMap.get(stkCode);
                         stkOrderWeightedBuyValue = stkOrderWeightedBuyValue!= null?stkOrderWeightedBuyValue:0D;
@@ -229,6 +234,19 @@ public class AllStockStat implements Runnable{
                         compositeScoreArrayList.add(transBsRateValue);
                         compositeScoreArrayList.add(compositeScoreValue);
                         compositeScoreMapALL.put(stkCode,compositeScoreArrayList);
+//计算弹性比
+                        Double indexSDValue = indexSDMapAll.get("300");
+                        Double bounceRateValue = 0D;
+                        indexSDValue = indexSDValue!= null?indexSDValue:0D;
+                        Double bounceValue = stkSDValueDouble-indexSDValue;
+                        if (bounceValue>0&&!compositeScoreValue.equals(0D)){
+                            bounceRateValue=bounceValue/compositeScoreValue;
+                        }
+                        else if (bounceValue<0){
+                            bounceRateValue=bounceValue*compositeScoreValue;
+                        }
+                        String bounceRate = String.format("%.1f",bounceRateValue);
+                        realJedisInstance.set(bounceRateKey,bounceRate);
                     }
 
                 }

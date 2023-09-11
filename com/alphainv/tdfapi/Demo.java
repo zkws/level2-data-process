@@ -26,7 +26,7 @@ public class Demo {
 //    private final int openTypeFlags = DATA_TYPE_FLAG.DATA_TYPE_TRANSACTION;
     //代码类型订阅，多类型'|'计算，如指数+股票为CODE_TYPE_FLAG.CODE_TYPE_INDEX | CODE_TYPE_FLAG.CODE_TYPE_SHARES
 //    private final int openCodeTypeFlags = CODE_TYPE_FLAG.CODE_TYPE_ALL;
-    private final int openCodeTypeFlags = CODE_TYPE_FLAG.CODE_TYPE_SHARES;
+    private final int openCodeTypeFlags = CODE_TYPE_FLAG.CODE_TYPE_SHARES|CODE_TYPE_FLAG.CODE_TYPE_INDEX;
 
     //环境设置参数
     private final int HEART_BEAT_INTERVAL = 0;//Heart Beat间隔（秒数）, 若值为0则表示默认值10秒钟
@@ -39,11 +39,13 @@ public class Demo {
     private BlockingQueue<MarketDataInfo> marketDataInfoQueue;
     private BlockingQueue<TransactionDataInfo> transactionDataInfoQueue;
     private BlockingQueue<OrderDataInfo> orderDataInfoQueue;
+    private BlockingQueue<IndexDataInfo> indexDataInfoQueue;
     TDFClient client = new TDFClient();
-    Demo(String ip, int port, String username, String password, String market, BlockingQueue<MarketDataInfo> marketDataInfoQueue, BlockingQueue<TransactionDataInfo> transactionDataInfoQueue, BlockingQueue<OrderDataInfo> orderDataInfoQueue) {
+    Demo(String ip, int port, String username, String password, String market, BlockingQueue<MarketDataInfo> marketDataInfoQueue, BlockingQueue<TransactionDataInfo> transactionDataInfoQueue, BlockingQueue<OrderDataInfo> orderDataInfoQueue, BlockingQueue<IndexDataInfo> indexDataInfoQueue) {
         this.marketDataInfoQueue = marketDataInfoQueue;
         this.transactionDataInfoQueue = transactionDataInfoQueue;
         this.orderDataInfoQueue = orderDataInfoQueue;
+        this.indexDataInfoQueue = indexDataInfoQueue;
         this.quitFlag = false;
         this.LastPrintTime = System.currentTimeMillis();
         //构造配置参数
@@ -173,6 +175,7 @@ public class Demo {
 
     void run() throws ClassNotFoundException, SQLException, InstantiationException, ParseException, IllegalAccessException, InterruptedException {//这里会循环取数据! 目前JavaAPI的机制是收取的数据存在队列中，等待用户读取。如果用户读取过慢，可能会积压或者丢失数据，所以这里处理要快
         long marketCount = 0;
+        long indexCount = 0;
         long transCount = 0;
         long orderCount = 0;
         String printTime = "";
@@ -244,6 +247,27 @@ public class Demo {
                     }
                     if (marketCount%200000==0){
                         System.out.println("已从交易所接收"+marketCount+" 当前market队列长度还剩"+marketDataInfoQueue.size()+" 当前交易所时间" +printTime);
+                    }
+                    break;
+                case TDF_MSG_ID.MSG_DATA_INDEX:
+                    messageCount = msg.getAppHead().getItemCount();
+                    for (int i = 0; i < messageCount; i++) {
+                        TDF_MSG_DATA data = TDFClient.getMessageData(msg, i);
+                        TDF_INDEX_DATA index_data_instance = data.getIndexData();
+                        String exchangeTimeStrMs = String.valueOf(index_data_instance.getTime());
+                        IndexDataInfo indexDataInfoInstance = new IndexDataInfo(index_data_instance.getHighIndex(),
+                                index_data_instance.getLowIndex(),
+                                index_data_instance.getOpenIndex(),
+                                index_data_instance.getLastIndex(),
+                                index_data_instance.getPreCloseIndex(),
+                                exchangeTimeStrMs,
+                                index_data_instance.getCode());
+                        indexDataInfoQueue.put(indexDataInfoInstance);
+                        indexCount++;
+                        printTime =exchangeTimeStrMs;
+                    }
+                    if (indexCount%200000==0){
+                        System.out.println("已从交易所接收"+indexCount+" 当前index队列长度还剩"+indexDataInfoQueue.size()+" 当前交易所时间" +printTime);
                     }
                     break;
                 case TDF_MSG_ID.MSG_DATA_TRANSACTION:
@@ -325,11 +349,12 @@ public class Demo {
         BlockingQueue<MarketDataInfo> marketDataInfoQueue = new LinkedBlockingQueue <MarketDataInfo>();
         BlockingQueue<TransactionDataInfo> transactionDataInfoQueue = new LinkedBlockingQueue <TransactionDataInfo>();
         BlockingQueue<OrderDataInfo> orderDataInfoQueue = new LinkedBlockingQueue <OrderDataInfo>();
+        BlockingQueue<IndexDataInfo> indexDataInfoQueue = new LinkedBlockingQueue<IndexDataInfo>();
         // Proxy Mode
 		/*Demo demo = new Demo("10.100.3.163", 20200, "dev_test", "dev_test", 
 				"10.100.6.125", 3128, "", "");*/
         //命令行输入模式
-        Demo demo = new Demo(args[0], Integer.parseInt(args[1]), args[2], args[3], args[4], marketDataInfoQueue, transactionDataInfoQueue, orderDataInfoQueue);  //这里会打开到Server的连接。具体看实现代码
+        Demo demo = new Demo(args[0], Integer.parseInt(args[1]), args[2], args[3], args[4], marketDataInfoQueue, transactionDataInfoQueue, orderDataInfoQueue,indexDataInfoQueue);  //这里会打开到Server的连接。具体看实现代码
 //        demo.setSusbScription("600680.SH;000002.sz", SUBSCRIPTION_STYLE.SUBSCRIPTION_SET);
         //一般配置模式
         //Demo demo = new Demo("10.100.3.67", 6221, "dev_test", "dev_test", "SZ-2-0");
@@ -381,6 +406,7 @@ public class Demo {
 
         HashMap<String,String> stkChannelMap = new HashMap<String,String>();
         ConcurrentHashMap<String,String> stkSDMapAll = new ConcurrentHashMap<String,String>();
+        ConcurrentHashMap<String,Double> indexSDMapAll = new ConcurrentHashMap<String,Double>();
         ConcurrentHashMap<String,Long> orderBuyMapAll = new ConcurrentHashMap<String,Long>();
         ConcurrentHashMap<String,Long> orderSellMapAll = new ConcurrentHashMap<String,Long>();
         ConcurrentHashMap<String,Double> weightedOrderBuyMapAll = new ConcurrentHashMap<String,Double>();
@@ -401,6 +427,9 @@ public class Demo {
 
         MarketDataInfoWrite marketDataInfoWriteInstance = new MarketDataInfoWrite(marketDataInfoQueue,channelQueueDataArray,channelCodeMap,stkChannelMap,jedisPool,highLimitFlagMapAll);
         taskQueueDaemonThread.put(0,marketDataInfoWriteInstance);
+
+        IndexDataInfoWrite indexDataInfoWriteInstance = new IndexDataInfoWrite(indexDataInfoQueue,indexSDMapAll);
+        taskQueueDaemonThread.put(0,indexDataInfoWriteInstance);
 
         OrderDataInfoWrite orderDataInfoWriteInstance = new OrderDataInfoWrite(channelQueueDataArray,orderDataInfoQueue,channelCodeMap,stkChannelMap);
         taskQueueDaemonThread.put(10000,orderDataInfoWriteInstance);
@@ -477,7 +506,7 @@ public class Demo {
                     weightedOrderBuyMapAll,weightedOrderSellMapAll,
                     order5MBuyMapAll,order5MSellMapAll,
                     transBuyMapAll,transSellMapAll,
-                    orderBsRateMapALL,weightedOrderBSRateMapAll, transBsRateMapALL, compositeScoreMapALL);
+                    orderBsRateMapALL,weightedOrderBSRateMapAll, transBsRateMapALL, compositeScoreMapALL,indexSDMapAll);
             taskQueueDaemonThread.put(delayTime,allStockStat);
         }
         JedisPoolConfig sectorJedisPoolConfig = new JedisPoolConfig();
