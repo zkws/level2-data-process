@@ -119,7 +119,7 @@ public class StockRankStat implements Runnable{
             Class.forName("oracle.jdbc.driver.OracleDriver");
             String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
             String oracleUser = "iacore";
-            String oraclePd = "tmd242209";
+            String oraclePd = "tmd123";
             Connection oracleCon = null;
             oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
             Statement oracleStatement = oracleCon.createStatement();
@@ -162,7 +162,7 @@ public class StockRankStat implements Runnable{
             Class.forName("oracle.jdbc.driver.OracleDriver");
             String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
             String oracleUser = "iacore";
-            String oraclePd = "tmd242209";
+            String oraclePd = "tmd123";
             Connection oracleCon = null;
             oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
             Statement oracleStatement = oracleCon.createStatement();
@@ -208,7 +208,7 @@ public class StockRankStat implements Runnable{
             Class.forName("oracle.jdbc.driver.OracleDriver");
             String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
             String oracleUser = "iacore";
-            String oraclePd = "tmd242209";
+            String oraclePd = "tmd123";
             Connection oracleCon = null;
             oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
             Statement oracleStatement = oracleCon.createStatement();
@@ -253,7 +253,7 @@ public class StockRankStat implements Runnable{
             Class.forName("oracle.jdbc.driver.OracleDriver");
             String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
             String oracleUser = "iacore";
-            String oraclePd = "tmd242209";
+            String oraclePd = "tmd123";
             Connection oracleCon = null;
             oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
             Statement oracleStatement = oracleCon.createStatement();

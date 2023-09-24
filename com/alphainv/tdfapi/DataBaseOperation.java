@@ -9,7 +9,7 @@ public class DataBaseOperation {
         Class.forName("oracle.jdbc.driver.OracleDriver");
         String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
         String oracleUser = "iacore";
-        String oraclePd = "tmd242209";
+        String oraclePd = "tmd123";
         Connection oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
         HashMap<String,ArrayList<String>> swSectorListMap = new HashMap<String,ArrayList<String>>();
         String[] sector_class_array = {"sw1Code", "sw2Code", "sw3Code"};
@@ -36,7 +36,7 @@ public class DataBaseOperation {
         Class.forName("oracle.jdbc.driver.OracleDriver");
         String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
         String oracleUser = "iacore";
-        String oraclePd = "tmd242209";
+        String oraclePd = "tmd123";
         Connection oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
         String[] sector_class_array = {"sw1Code", "sw2Code", "sw3Code"};
         for (String sector_class_code:sector_class_array) {
@@ -74,7 +74,7 @@ public class DataBaseOperation {
         Class.forName("oracle.jdbc.driver.OracleDriver");
         String oracleUrl = "jdbc:oracle:thin:@//10.23.188.53:1521/ORCL";
         String oracleUser = "iacore";
-        String oraclePd = "tmd242209";
+        String oraclePd = "tmd123";
         Connection oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
         String allStkSql = "select * from CODE_STK_INDU_HSALL";// 预编译语句，“？”代表参数
 //        System.out.println(swSql);
