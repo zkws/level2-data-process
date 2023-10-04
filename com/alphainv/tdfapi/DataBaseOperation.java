@@ -76,7 +76,7 @@ public class DataBaseOperation {
         String oracleUser = "iacore";
         String oraclePd = "tmd123";
         Connection oracleCon = DriverManager.getConnection(oracleUrl, oracleUser, oraclePd);
-        String allStkSql = "select * from CODE_STK_INDU_HSALL";// 预编译语句，“？”代表参数
+        String allStkSql = "select * from CODE_STK_INDU_HSALL where stkCode is not null and LEN(stkCode)>0;";// 预编译语句，“？”代表参数
 //        System.out.println(swSql);
         PreparedStatement pre = oracleCon.prepareStatement(allStkSql);// 实例化预编译语句
         ResultSet stkListResult = pre.executeQuery();
