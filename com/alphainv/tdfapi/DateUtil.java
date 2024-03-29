@@ -3,6 +3,7 @@ package com.alphainv.tdfapi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
@@ -73,6 +74,28 @@ public class DateUtil {
 
 //        System.out.println(delayTimeList.size());
         return delayTimeList;
+    }
+
+    public static Long getCapitalFlowDelayTime(Long statDateLong) throws ParseException {
+        SimpleDateFormat fullDF = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        SimpleDateFormat ymdDF = new SimpleDateFormat("yyyyMMdd");
+        Long delayTimeLong = 0L;
+        Date statDate = new Date();
+        statDate.setTime(statDateLong);
+
+        String ymdStr = ymdDF.format(statDate);
+        String pmInsertTimeStr = ymdStr+"-154500";
+        Date pmInsertTime = fullDF.parse(pmInsertTimeStr);
+        Long pmInsertTimeLong = pmInsertTime.getTime();
+        if (statDateLong>=pmInsertTimeLong){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(pmInsertTime);
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            pmInsertTime = calendar.getTime();
+            pmInsertTimeLong = pmInsertTime.getTime();
+        }
+        delayTimeLong = pmInsertTimeLong-statDateLong;
+        return delayTimeLong;
     }
 
     public static void main(String[] args) throws ParseException {

@@ -532,6 +532,10 @@ public class Demo {
             taskQueueDaemonThread.put(delayTime,stockRankStat);
         }
 
+        Long pmInsertDelayTimeLong = DateUtil.getCapitalFlowDelayTime(statDateLong);
+        TradingCapitalFlowStat tradingCapitalFlowStat = new TradingCapitalFlowStat(transBuyMapAll,transSellMapAll);
+        taskQueueDaemonThread.put(pmInsertDelayTimeLong,tradingCapitalFlowStat);
+
         //订阅
         if (testSub) {
             demo.setSusbScription("600680.SH;000002.sz", SUBSCRIPTION_STYLE.SUBSCRIPTION_SET);
