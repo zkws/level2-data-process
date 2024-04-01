@@ -25,7 +25,7 @@ public class TradingCapitalFlowStat implements Runnable{
         long statDateLong = statDate.getTime();
         SimpleDateFormat fullDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String insertStatTime = fullDF.format(statDate);
-        String insertStatDate = insertStatTime.substring(0,8);
+        String insertStatDate = insertStatTime.substring(0,10);
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
         } catch (ClassNotFoundException e) {
@@ -48,7 +48,7 @@ public class TradingCapitalFlowStat implements Runnable{
                 String sellValueStr = sellValue.toString();
                 System.out.println("key = " + stkCode + ",buy value = " + buyValue+ ",sell value = " + sellValue);
                 String insertSql = "insert into trading_capital_flow_l2 "+" (stk_code, buy_value, sell_value, stat_time, stat_date)" +
-                        "values('"+ stkCode +"',"+buyValueStr+","+sellValueStr+","+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd')";
+                        " values('"+ stkCode +"',"+buyValueStr+","+sellValueStr+",to_date('"+insertStatTime+"', 'yyyy-mm-dd hh24:mi:ss'),to_date('"+insertStatDate+"', 'yyyy-mm-dd'))";
 //                      System.out.println(insertSql);
                 oracleStatement.executeUpdate(insertSql);
             }
