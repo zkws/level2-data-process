@@ -1,37 +1,19 @@
-# Level2数据接收处理
-
-#### 介绍
-Level2数据接收处理
-
-#### 软件架构
-软件架构说明
 
 
-#### 安装教程
+**A-Share Market Data Engine**
+A high-performance Java backend system processing CITIC Securities-provided Level-2 data from China A-Share markets, featuring:
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+📈 Core Modules:
+• Real-time order book reconstruction 
+• Tick data stream processing
 
-#### 使用说明
+[![Java 8](https://img.shields.io/badge/Java-8-007396)](https://java.com)
+[![Spring Boot 2.7](https://img.shields.io/badge/Spring_Boot-2.7-6DB33F)](https://spring.io)
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+*Integrated with CITIC's proprietary data API using FIX protocol adapters, compliant with CSRC data security regulations.*
 
 
-#### 特技
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+*Data Source: CITIC Securities L2 feed (SSE/SZSE authorized distributor)*
+
+This implementation demonstrates enterprise-grade Java solutions for institutional-grade market data processing.
